@@ -1,3 +1,6 @@
+# Files to ignore when moving up to git
+Practice.ipynb 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
