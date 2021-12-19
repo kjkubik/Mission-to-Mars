@@ -32,7 +32,7 @@ def scrape():
    mars.update_one({}, mars_data, upsert=True)
    return redirect('/', code=302)
 
-run app.py
+# Run app.py
 if __name__ == "__main__":
        app.run()
 

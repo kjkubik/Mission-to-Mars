@@ -3,11 +3,28 @@ from splinter import Browser
 from bs4 import BeautifulSoup as soup
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
+import datetime as dt
 
-# Creating an instance of a Splinter browser (prepping automated browser)
-executable_path = {'executable_path': ChromeDriverManager().install()}
-browser = Browser('chrome', **executable_path, headless=False)
+def scrape_all():
+    # Creating an instance of a Splinter browser (prepping automated browser)
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=True)
+    news_title, news_paragraph = mars_news(browser)
 
+    # Run all scraping functions and store results in dictionary
+    data = {
+      "news_title": news_title,
+      "news_paragraph": news_paragraph,
+      "featured_image": featured_image(browser),
+      "facts": mars_facts(),
+      "last_modified": dt.datetime.now()
+    }
+
+    # end the session
+    browser.quit()
+    return data
+
+# Scrape the titles and teasers from redplanetscience.com
 def mars_news(browser):
     # Give the url of the site being to scrape with splinter
     # Visit the Mars NASA news site
@@ -35,7 +52,6 @@ def mars_news(browser):
         return None, None
         
     return news_title, news_paragraph
-
 
 # Scrape Mars Data: Featured Image (10.3.4)
 def featured_image(browser):
@@ -74,11 +90,13 @@ def mars_facts():
         df = pd.read_html('https://galaxyfacts-mars.com')[0]
     except BaseException:
         return None
-    
+ 
+    # Assign columns and set index of dataframe   
     df.columns=['Description', 'Mars', 'Earth']
     df.set_index('Description', inplace=True)
-    # convert it to HTML (more-less)
-    return df.to_html() 
-    
-    # end the session
-    # browser.quit()
+    # Convert it to HTML (more-less)
+    return df.to_html(classes="table table-striped")
+
+if __name__ == "__main__":
+    # If running as script, print scraped data
+    print(scrape_all())
