@@ -29,14 +29,14 @@ def index():
 def scrape():
    mars = mongo.db.mars
    mars_data = scraping.scrape_all()
-   mars.update_one({}, mars_data, upsert=True)
+   #mars.update_one({}, mars_data, upsert=True)
+   mars.update_one({}, {"$set" : mars_data}, upsert=True)
    return redirect('/', code=302)
+
+# Hey, you know how yesterday they told me to use “insert_one” instead of “update” on the app.py file?
+# Don't do that :joy: instead use the following : mars.update_one({}, {“$set” : mars_data}, upsert=True)
+
 
 # Run app.py
 if __name__ == "__main__":
        app.run()
-
-
-# Hey, you know how yesterday they told me to use “insert_one” instead of “update” on the app.py file? 
-# Don't do that :joy: instead use the following : mars.update_one({}, {“$set” : mars_data}, upsert=True)
-    
