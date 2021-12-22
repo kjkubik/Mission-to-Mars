@@ -20,8 +20,6 @@ def scrape_all():
       "last_modified": dt.datetime.now()
     }
 
-    # end the session
-    browser.quit()
     return data
 
 # Scrape the titles and teasers from redplanetscience.com
@@ -96,6 +94,41 @@ def mars_facts():
     df.set_index('Description', inplace=True)
     # Convert it to HTML (more-less)
     return df.to_html(classes="table table-striped")
+
+# Scrape the Hemisphere Data
+def mars_hemispheres():
+     # Creating an instance of a Splinter browser (prepping automated browser)
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=True) 
+       
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars/'
+    browser.visit(url)
+    url
+    
+    hemisphere_image_urls = []
+    
+    # Parse the resulting html with soup
+    html = browser.html
+    products_soup = soup(html, 'html.parser')
+    product_block_items = products_soup.find_all('div', class_='item')
+    
+    # Capture the images and titles
+    x = len(product_block_items)
+    print(x)
+    y = 1
+    for item in product_block_items:
+        if y <= x: 
+            a_dict = {}
+            image = item.find('img',class_='thumb').get('src')
+            title = item.find('h3').text
+            a_dict['img_url'] =  image
+            a_dict['title'] = title
+            hemisphere_image_urls.append(a_dict)        
+            y = y + 1
+    
+    # end the session
+    browser.quit()        
+    return hemisphere_image_urls    
 
 if __name__ == "__main__":
     # If running as script, print scraped data
