@@ -17,7 +17,8 @@ def scrape_all():
       "news_paragraph": news_paragraph,
       "featured_image": featured_image(browser),
       "facts": mars_facts(),
-      "last_modified": dt.datetime.now()
+      "last_modified": dt.datetime.now(),
+      "hemispheric_data": mars_hemispheres(browser)
     }
 
     return data
@@ -95,38 +96,48 @@ def mars_facts():
     # Convert it to HTML (more-less)
     return df.to_html(classes="table table-striped")
 
-# Scrape the Hemisphere Data
-def mars_hemispheres():
-     # Creating an instance of a Splinter browser (prepping automated browser)
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=True) 
+# Scrape Mars Hemispheric Image and Title
+def mars_hemispheres(browser):
        
     url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars/'
     browser.visit(url)
-    url
-    
+        
     hemisphere_image_urls = []
     
-    # Parse the resulting html with soup
-    html = browser.html
-    products_soup = soup(html, 'html.parser')
-    product_block_items = products_soup.find_all('div', class_='item')
+    for x in range(4, 12, 2):
+        # get to the page you need to go to via anchors tags using index
+        to_click = browser.find_by_tag('a')[x] 
+        to_click.click()
     
-    # Capture the images and titles
-    x = len(product_block_items)
-    print(x)
-    y = 1
-    for item in product_block_items:
-        if y <= x: 
-            a_dict = {}
-            image = item.find('img',class_='thumb').get('src')
-            title = item.find('h3').text
-            a_dict['img_url'] =  image
-            a_dict['title'] = title
-            hemisphere_image_urls.append(a_dict)        
-            y = y + 1
+        # define an empty dictionary
+        a_dict = {}
     
-    # end the session
+        # parse resulting html using Soup
+        html = browser.html
+        products_soup = soup(html, 'html.parser')
+    
+        # get the image
+        product_jpeg = products_soup.find('div', class_='wide-image-wrapper')
+        jpeg = product_jpeg.find('a').get('href')
+        jpeg_with_parent = f'{url}{jpeg}'
+    
+        # get the title
+        product_title = products_soup.find('div', class_='cover')
+        title = product_title.find('h2',class_='title').text
+    
+        # put image and title into the dictionary 
+        a_dict['img_url'] =  jpeg_with_parent
+        a_dict['title'] = title
+    
+        # append the dictionaries to your list
+        hemisphere_image_urls.append(a_dict)
+    
+        #go back to the first page
+        browser.back()
+    
+    hemisphere_image_urls
+    
+    # end browser session
     browser.quit()        
     return hemisphere_image_urls    
 
