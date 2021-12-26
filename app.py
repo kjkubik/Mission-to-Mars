@@ -20,6 +20,7 @@ mongo = PyMongo(app)
 def index():
    # Use PyMongo to find the "mars" collection in our database
    mars = mongo.db.mars.find_one()
+   print(mars)
    # Return HTML template using index.html and mars as collection in MongoDB
    return render_template("index.html", mars=mars)
 
