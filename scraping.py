@@ -80,7 +80,6 @@ def featured_image(browser):
     
     return img_url
 
-
 # Scrape Mars and Earth Facts Table
 def mars_facts():
     try: 
@@ -98,21 +97,22 @@ def mars_facts():
 
 # Scrape Mars Hemispheric Image and Title
 def mars_hemispheres(browser):
-       
-    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars/'
+    
+    # initial page   
+    url = 'https://marshemispheres.com/'
     browser.visit(url)
         
     hemisphere_image_urls = []
     
     for x in range(4, 12, 2):
-        # get to the page you need to go to via anchors tags using index
+        # goto page you need scrap data from
         to_click = browser.find_by_tag('a')[x] 
         to_click.click()
     
         # define an empty dictionary
         a_dict = {}
     
-        # parse resulting html using Soup
+        # parse resulting html
         html = browser.html
         products_soup = soup(html, 'html.parser')
     
@@ -129,10 +129,10 @@ def mars_hemispheres(browser):
         a_dict['img_url'] =  jpeg_with_parent
         a_dict['title'] = title
     
-        # append the dictionaries to your list
+        # append the dictionary to your list
         hemisphere_image_urls.append(a_dict)
     
-        #go back to the first page
+        #go back to initial page so that you can get next 
         browser.back()
     
     hemisphere_image_urls
@@ -142,5 +142,5 @@ def mars_hemispheres(browser):
     return hemisphere_image_urls    
 
 if __name__ == "__main__":
-    # If running as script, print scraped data
+    # scrape data
     print(scrape_all())
