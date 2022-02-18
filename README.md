@@ -2,7 +2,7 @@
 Web Scraping using BeautifulSoup, Splinter, MongoDB, Flask, HTML, CSS, ChromeDriverManager, Chrome Developer Tools, Python
 
 ## Purpose
-In this module we create an automated web scrapping app using various tools to scrap the data from several Mars websites, store the data in MongoDB, and display the data as a web page.
+In this module we create an automated web scrapping app using various tools to scrape the data from several Mars websites, store the data in MongoDB, and display the data as a web page.
 
 scraping.py is the script used to scrap data from Mars websites. The main steps for doing so are:
 
