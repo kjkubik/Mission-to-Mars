@@ -16,7 +16,7 @@ scraping.py is the script used to scrap data from Mars websites. The main steps 
   
 app.py is the scripted used to automate scrape processing using Flask. The main steps for doing so are: 
 
-- connect to your MangoDB mars collection via localhost
+- connect to your MongoDB mars collection via localhost
 - name HTML page rendered
 - set-up Flask routes, including the scraping route
 
